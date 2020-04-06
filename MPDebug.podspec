@@ -1,6 +1,6 @@
 Pod::Spec.new do |s|
   s.name             = 'MPDebug'
-  s.version          = '0.0.8'
+  s.version          = '0.0.9'
   s.summary          = 'A Debug Tools for iOS'
   s.description      = <<-DESC
 A Debug Tools for iOS
@@ -10,6 +10,9 @@ A Debug Tools for iOS
   s.author           = { 'manhpham90vn' => 'manhpham90vn@icloud.com' }
   s.source           = { :git => 'https://github.com/manhpham90vn/MPDebug.git', :tag => s.version.to_s }
   s.ios.deployment_target = '8.0'
-  s.source_files = 'MPDebug/*'
-  
+  s.source_files = 'MPDebug/*.{h,m,swift}'
+  s.preserve_path = 'MPDebug/module.modulemap'
+  s.xcconfig = { 'SWIFT_INCLUDE_PATHS' => "'${PODS_TARGET_SRCROOT}/MPDebug'" }
+  s.swift_version = '5.0'
+   
 end
