@@ -1,0 +1,6 @@
+framework module Pods_MPDebug_Tests {
+  umbrella header "Pods-MPDebug_Tests-umbrella.h"
+
+  export *
+  module * { export * }
+}

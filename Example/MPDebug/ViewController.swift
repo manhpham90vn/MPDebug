@@ -12,7 +12,12 @@ class ViewController: UIViewController {
 
     override func viewDidLoad() {
         super.viewDidLoad()
-        // Do any additional setup after loading the view, typically from a nib.
+        
+        URLSession.shared.dataTask(with: URL(string: "https://httpbin.org/get")!) { (data, response, error) in
+            print(data?.count ?? 0)
+        }
+        .resume()
+        
     }
 
     override func didReceiveMemoryWarning() {

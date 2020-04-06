@@ -1,0 +1,6 @@
+framework module MPDebug {
+  umbrella header "MPDebug-umbrella.h"
+
+  export *
+  module * { export * }
+}

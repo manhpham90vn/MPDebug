@@ -1,0 +1,16 @@
+PODS:
+  - MPDebug (0.1.0)
+
+DEPENDENCIES:
+  - MPDebug (from `../`)
+
+EXTERNAL SOURCES:
+  MPDebug:
+    :path: "../"
+
+SPEC CHECKSUMS:
+  MPDebug: 8455a9dae4bcad25c7f341afd17040311ed00e6e
+
+PODFILE CHECKSUM: 18acc2612248e6fc8ee01bef6e4d170610d9b13f
+
+COCOAPODS: 1.9.1

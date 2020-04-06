@@ -1,0 +1,13 @@
+/* 
+  module.modulemap
+  MPDebug
+
+  Created by Manh Pham on 4/6/20.
+  Copyright © 2020 Manh Pham. All rights reserved.
+*/
+
+module MPDebugPrivate {
+  header "URLConnectionInjector.h"
+  header "URLSessionInjector.h"
+  export *
+}
