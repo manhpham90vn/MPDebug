@@ -8,22 +8,32 @@
 import Foundation
 import MPDebugPrivate
 
-public final class MPDebugLog: NSObject {
+public final class MPDebugLog {
         
     public static let share = MPDebugLog()
+    private init() { }
     
     private var urlSessionInjector: URLSessionInjector?
     private var urlConnectionInjector: URLConnectionInjector?
     private let serialQueue = DispatchQueue(label: "com.manhpham.MPDebug")
     
+    private var datas = [DataResponse]()
+    
     public func start() {
         urlSessionInjector = URLSessionInjector(delegate: self)
         urlConnectionInjector = URLConnectionInjector(delegate: self)
+        SocketIOManager.share.connect()
     }
     
-    public func run(completion: @escaping () -> Void) {
+    func run(completion: @escaping () -> Void) {
         serialQueue.async {
             completion()
+        }
+    }
+        
+    func sendData(data: DataResponse) {
+        if SocketIOManager.share.isSocketConnected() {
+            SocketIOManager.share.send(data: data.description)
         }
     }
     
@@ -32,32 +42,26 @@ public final class MPDebugLog: NSObject {
 extension MPDebugLog: URLSessionInjectorDelegate {
     public func urlSessionInjector(_ injector: URLSessionInjector!, didStart dataTask: URLSessionDataTask!) {
         run {
-            print("URLSessionInjectorDelegate didStart")
-            print(dataTask.currentRequest?.url ?? "")
-            print(dataTask.currentRequest?.httpBody ?? "")
-            print(dataTask.currentRequest?.httpMethod ?? "")
+            self.datas.append(DataResponse(urlSessionDataTask: dataTask))
         }
     }
     
     public func urlSessionInjector(_ injector: URLSessionInjector!, didReceiveResponse dataTask: URLSessionDataTask!, response: URLResponse!) {
         run {
-            print("URLSessionInjectorDelegate didReceiveResponse")
-            print(response ?? "")
+            self.datas.filter({ $0.urlSessionDataTask == dataTask }).forEach({ $0.urlResponse = response })
         }
-        
     }
     
     public func urlSessionInjector(_ injector: URLSessionInjector!, didReceiveData dataTask: URLSessionDataTask!, data: Data!) {
         run {
-            print("URLSessionInjectorDelegate didReceiveData")
-            print(DataResponseParser.parse(data: data)?.type ?? "")
+            self.datas.filter({ $0.urlSessionDataTask == dataTask }).forEach({ $0.data = data; $0.type = DataResponseParser.parse(data: data) })
         }
     }
     
     public func urlSessionInjector(_ injector: URLSessionInjector!, didFinishWithError dataTask: URLSessionDataTask!, error: Error!) {
         run {
-            print("URLSessionInjectorDelegate didFinishWithError")
-            print(error ?? "")
+            guard let data = self.datas.filter({ $0.urlSessionDataTask == dataTask }).first else { return }
+            self.sendData(data: data)
         }
     }
 }

@@ -1,16 +1,27 @@
 PODS:
-  - MPDebug (0.1.0)
+  - MPDebug (0.0.9):
+    - Socket.IO-Client-Swift (~> 15.2.0)
+  - Socket.IO-Client-Swift (15.2.0):
+    - Starscream (~> 3.1)
+  - Starscream (3.1.1)
 
 DEPENDENCIES:
   - MPDebug (from `../`)
+
+SPEC REPOS:
+  trunk:
+    - Socket.IO-Client-Swift
+    - Starscream
 
 EXTERNAL SOURCES:
   MPDebug:
     :path: "../"
 
 SPEC CHECKSUMS:
-  MPDebug: 8455a9dae4bcad25c7f341afd17040311ed00e6e
+  MPDebug: 3dccf679957f20953c0ee4f2de28c11d967fcfb0
+  Socket.IO-Client-Swift: 1e3e3a1f09f3312a167f0d781eb2f383d477357c
+  Starscream: 4bb2f9942274833f7b4d296a55504dcfc7edb7b0
 
-PODFILE CHECKSUM: 18acc2612248e6fc8ee01bef6e4d170610d9b13f
+PODFILE CHECKSUM: d1d5cdecb5859401dc3f05dfaca58c4c1734c995
 
 COCOAPODS: 1.9.1

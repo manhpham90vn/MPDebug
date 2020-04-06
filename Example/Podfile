@@ -1,11 +1,11 @@
 use_frameworks!
 
 target 'MPDebug_Example' do
+  
   pod 'MPDebug', :path => '../'
 
   target 'MPDebug_Tests' do
     inherit! :search_paths
-
-    
   end
+  
 end

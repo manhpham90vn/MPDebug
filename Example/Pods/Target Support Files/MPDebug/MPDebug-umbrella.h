@@ -10,6 +10,8 @@
 #endif
 #endif
 
+#import "URLConnectionInjector.h"
+#import "URLSessionInjector.h"
 
 FOUNDATION_EXPORT double MPDebugVersionNumber;
 FOUNDATION_EXPORT const unsigned char MPDebugVersionString[];
