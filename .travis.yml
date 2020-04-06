@@ -3,4 +3,4 @@ language: objective-c
 
 script:
 - set -o pipefail && xcodebuild test -enableCodeCoverage YES -workspace Example/MPDebug.xcworkspace -scheme MPDebug-Example -sdk iphonesimulator13.2 ONLY_ACTIVE_ARCH=NO | xcpretty
-- pod lib lint
+- pod lib lint --allow-warnings
