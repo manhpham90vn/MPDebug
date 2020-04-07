@@ -1,6 +1,6 @@
 Pod::Spec.new do |s|
   s.name             = 'MPDebug'
-  s.version          = '1.0.5'
+  s.version          = '1.0.6'
   s.summary          = 'A remote debug tools for iOS'
   s.description      = <<-DESC
 A debug tools for iOS with browser
