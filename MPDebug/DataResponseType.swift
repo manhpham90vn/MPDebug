@@ -11,16 +11,16 @@ enum DataResponseType {
     case html(value: NSAttributedString)
 }
 
-extension DataResponseType: CustomStringConvertible {
-    
-    var description: String {
+extension DataResponseType {
+        
+    var value: String {
         switch self {
         case .json(let value):
-            return "json \(value)"
+            return value
         case .image:
-            return "image"
+            return "Image"
         case .html:
-            return "html"
+            return "Html"
         }
     }
     

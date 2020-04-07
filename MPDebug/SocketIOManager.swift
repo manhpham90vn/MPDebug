@@ -22,7 +22,7 @@ class SocketIOManager {
         socket.connect()
     }
     
-    func send(data: String) {
+    func send(data: [String: Any]) {
         socket.emit("on", data)
     }
     
