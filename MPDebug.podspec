@@ -1,6 +1,6 @@
 Pod::Spec.new do |s|
   s.name             = 'MPDebug'
-  s.version          = '1.0.3'
+  s.version          = '1.0.4'
   s.summary          = 'A Debug Tools for iOS'
   s.description      = <<-DESC
 A Debug Tools for iOS

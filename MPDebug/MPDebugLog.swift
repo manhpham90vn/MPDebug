@@ -13,16 +13,25 @@ public final class MPDebugLog {
     public static let share = MPDebugLog()
     private init() { }
     
-    private var urlSessionInjector: URLSessionInjector?
-    private var urlConnectionInjector: URLConnectionInjector?
+    private var urlSessionInjector: URLSessionInjector!
+    private var urlConnectionInjector: URLConnectionInjector!
+    private var socketIOManager: SocketIOManager!
     private let serialQueue = DispatchQueue(label: "com.manhpham.MPDebug")
     
     private var datas = [DataResponse]()
     
+    public func start(ip: String) {
+        urlSessionInjector = URLSessionInjector(delegate: self)
+        urlConnectionInjector = URLConnectionInjector(delegate: self)
+        socketIOManager = SocketIOManager(ip: ip)
+        socketIOManager.connect()
+    }
+    
     public func start() {
         urlSessionInjector = URLSessionInjector(delegate: self)
         urlConnectionInjector = URLConnectionInjector(delegate: self)
-        SocketIOManager.share.connect()
+        socketIOManager = SocketIOManager()
+        socketIOManager.connect()
     }
     
     func run(completion: @escaping () -> Void) {
@@ -32,8 +41,8 @@ public final class MPDebugLog {
     }
         
     func sendData(data: DataResponse) {
-        if SocketIOManager.share.isSocketConnected() {
-            SocketIOManager.share.send(data: data.description)
+        if socketIOManager.isSocketConnected() {
+            socketIOManager.send(data: data.description)
             datas.removeAll(where: { $0.urlSessionDataTask == data.urlSessionDataTask })
         }
     }
