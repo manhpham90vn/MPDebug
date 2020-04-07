@@ -11,7 +11,7 @@ enum DataResponseParser {
     
     static func parse(data: Data?) -> DataResponseType? {
         guard let data = data else { return nil }
-        if let jsonObject = try? JSONSerialization.jsonObject(with: data, options: .mutableContainers) {
+        if let jsonObject = try? JSONSerialization.jsonObject(with: data, options: .allowFragments) {
             if let jsonData = try? JSONSerialization.data(withJSONObject: jsonObject, options: .prettyPrinted) {
                 if let jsonString = String(data: jsonData, encoding: .utf8) {
                     return .json(value: jsonString)

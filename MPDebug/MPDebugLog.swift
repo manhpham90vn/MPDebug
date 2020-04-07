@@ -34,6 +34,7 @@ public final class MPDebugLog {
     func sendData(data: DataResponse) {
         if SocketIOManager.share.isSocketConnected() {
             SocketIOManager.share.send(data: data.description)
+            datas.removeAll(where: { $0.urlSessionDataTask == data.urlSessionDataTask })
         }
     }
     
