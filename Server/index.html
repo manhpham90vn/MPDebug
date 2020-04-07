@@ -12,9 +12,11 @@
     <tr>
       <th scope="col">Date</th>
       <th scope="col">Url</th>
+      <th scope="col">Status Code</th>
       <th scope="col">Method</th>
       <th scope="col">User Agent</th>
-      <th scope="col">Request</th>
+      <th scope="col">Authorize</th>
+      <th scope="col">HTTP Body</th>
       <th scope="col">Response</th>
     </tr>
   </thead>
@@ -27,7 +29,7 @@
       $(function () {
         var socket = io('http://localhost:3000');
         socket.on('emit', function(msg){
-          $('#table > tbody:last-child').append($('<tr><td>' + msg.date + '</td><td>' + msg.url + '</td><td>' + msg.method + '</td><td>' +  msg.user_agent + '</td><td>' + msg.request + '</td><td><pre>' + msg.response +'</pre></td></tr>'));
+          $('#table > tbody:last-child').append($('<tr><td>' + msg.date + '</td><td>' + msg.url + '</td><td>' + msg.status_code + '</td><td>' +  msg.method + '</td><td>' + msg.user_agent + '</td><td>' + msg.authorize + '</td><td><pre>' + msg.http_body + '</pre></td><td><pre>' + msg.data +'</pre></td></tr>'));
         });
       });
     </script>

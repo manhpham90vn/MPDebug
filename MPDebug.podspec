@@ -1,9 +1,9 @@
 Pod::Spec.new do |s|
   s.name             = 'MPDebug'
-  s.version          = '1.0.4'
-  s.summary          = 'A Debug Tools for iOS'
+  s.version          = '1.0.5'
+  s.summary          = 'A remote debug tools for iOS'
   s.description      = <<-DESC
-A Debug Tools for iOS
+A debug tools for iOS with browser
                        DESC
   s.homepage         = 'https://github.com/manhpham90vn/MPDebug'
   s.license          = { :type => 'MIT', :file => 'LICENSE' }

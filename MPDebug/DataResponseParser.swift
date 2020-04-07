@@ -5,7 +5,7 @@
 //  Created by Manh Pham on 4/5/20.
 //
 
-import Foundation
+import UIKit
 
 enum DataResponseParser {
     
@@ -20,10 +20,11 @@ enum DataResponseParser {
         } else if let image = UIImage(data: data) {
             return .image(value: image)
         } else if let htmlString = try? NSMutableAttributedString(data: data,
-                                                                  options: [.documentType: NSMutableAttributedString.DocumentType.html, // swiftlint:disable:this line_length
-                                                                            .characterEncoding: String.Encoding.utf8.rawValue], // swiftlint:disable:this line_length
+                                                                  options: [:],
                                                                   documentAttributes: nil) {
             return .html(value: htmlString)
+        } else if let dataString = String(data: data, encoding: .utf8) {
+            return .string(value: dataString)
         }
         return nil
     }

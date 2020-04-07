@@ -11,14 +11,13 @@ import MPDebugPrivate
 public final class MPDebugLog {
         
     public static let share = MPDebugLog()
-    private init() { }
+    init() { }
     
-    private var urlSessionInjector: URLSessionInjector!
-    private var urlConnectionInjector: URLConnectionInjector!
-    private var socketIOManager: SocketIOManager!
-    private let serialQueue = DispatchQueue(label: "com.manhpham.MPDebug")
-    
-    private var datas = [DataResponse]()
+    var urlSessionInjector: URLSessionInjector!
+    var urlConnectionInjector: URLConnectionInjector!
+    var socketIOManager: SocketIOManager!
+    let serialQueue = DispatchQueue(label: "com.manhpham.MPDebug")
+    var datas = [DataResponse]()
     
     public func start(ip: String) {
         urlSessionInjector = URLSessionInjector(delegate: self)
@@ -34,16 +33,10 @@ public final class MPDebugLog {
         socketIOManager.connect()
     }
     
-    func run(completion: @escaping () -> Void) {
-        serialQueue.async {
-            completion()
-        }
-    }
-        
     func sendData(data: DataResponse) {
         if socketIOManager.isSocketConnected() {
-            socketIOManager.send(data: data.description)
-            datas.removeAll(where: { $0.urlSessionDataTask == data.urlSessionDataTask })
+            socketIOManager.send(data: data.getJsonData())
+            datas.removeAll(where: { $0.taskIdentifier == data.taskIdentifier })
         }
     }
     
@@ -51,28 +44,31 @@ public final class MPDebugLog {
 
 extension MPDebugLog: URLSessionInjectorDelegate {
     public func urlSessionInjector(_ injector: URLSessionInjector!, didStart dataTask: URLSessionDataTask!) {
-        run {
-            self.datas.append(DataResponse(urlSessionDataTask: dataTask))
+        let dataResponse = DataResponse(taskIdentifier: dataTask.taskIdentifier)
+        dataResponse.response.url = dataTask.currentRequest?.url?.absoluteString
+        dataResponse.response.method = dataTask.currentRequest?.httpMethod
+        dataResponse.response.userAgent = dataTask.currentRequest?.allHTTPHeaderFields?["User-Agent"]
+        dataResponse.response.authorize = dataTask.currentRequest?.allHTTPHeaderFields?["Authorization"]
+        dataResponse.response.httpBody =  DataResponseParser.parse(data: dataTask.currentRequest?.httpBody)?.description
+        
+        if !self.datas.contains(dataResponse) {
+            self.datas.append(dataResponse)
         }
     }
     
     public func urlSessionInjector(_ injector: URLSessionInjector!, didReceiveResponse dataTask: URLSessionDataTask!, response: URLResponse!) {
-        run {
-            self.datas.filter({ $0.urlSessionDataTask == dataTask }).forEach({ $0.urlResponse = response })
+        if let response = response as? HTTPURLResponse {
+            self.datas.filter({ $0.taskIdentifier == dataTask.taskIdentifier }).forEach({ $0.response.statusCode = response.statusCode })
         }
     }
     
     public func urlSessionInjector(_ injector: URLSessionInjector!, didReceiveData dataTask: URLSessionDataTask!, data: Data!) {
-        run {
-            self.datas.filter({ $0.urlSessionDataTask == dataTask }).forEach({ $0.data = data; $0.type = DataResponseParser.parse(data: data) })
-        }
+        self.datas.filter({ $0.taskIdentifier == dataTask.taskIdentifier }).forEach({ $0.response.data = DataResponseParser.parse(data: data)?.description })
     }
     
     public func urlSessionInjector(_ injector: URLSessionInjector!, didFinishWithError dataTask: URLSessionDataTask!, error: Error!) {
-        run {
-            guard let data = self.datas.filter({ $0.urlSessionDataTask == dataTask }).first else { return }
-            self.sendData(data: data)
-        }
+        guard let data = self.datas.filter({ $0.taskIdentifier == dataTask.taskIdentifier }).first else { return }
+        self.sendData(data: data)
     }
 }
 
