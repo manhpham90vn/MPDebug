@@ -20,6 +20,12 @@ it, simply add the following line to your Podfile:
 pod 'MPDebug'
 ```
 
+and your AppDelegate add
+
+```Swift
+MPDebugLog.share.start()
+```
+
 ### NodeJS
 
 ```shell
