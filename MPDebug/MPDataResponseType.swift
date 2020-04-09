@@ -27,7 +27,7 @@ extension MPDataResponseType {
         case .html(let value):
             return "Html Count = \(value.string.count)"
         case .string(let value):
-            return "String Count = \(value.count) \(value)"
+            return value
         case .unknown:
             return "Can not parser"
         case .null:

@@ -19,14 +19,14 @@
   <table id ="table" class="table">
     <thead>
       <tr>
-        <th scope="col" width="30%">Response</th>
-        <th scope="col" width="20%">HTTP Body</th>
-        <th scope="col" width="20%">Authorize</th>
+        <th scope="col" width="45%">Response</th>
+        <th scope="col" width="15%">HTTP Body</th>
+        <th scope="col" width="15%">Url</th>
         <th scope="col" width="5%">Date</th>
-        <th scope="col" width="5%">Url</th>
         <th scope="col" width="5%">Status Code</th>
         <th scope="col" width="5%">Method</th>
         <th scope="col" width="5%">User Agent</th>
+        <th scope="col" width="5%">Authorize</th>
       </tr>
     </thead>
     <tbody>
@@ -45,26 +45,26 @@
         if( $.inArray(msg.id,ids) != -1 ) {
           $('.'+ msg.id).html('');
           $('.'+ msg.id).append(
-              '<td width="35%"><pre>'  + msg.data        + '</pre></td>'
-            + '<td width="20%">'       + msg.http_body   + '</td>'
-            + '<td width="20%">'       + msg.authorize   + '</td>'
+              '<td width="45%"><pre>'  + msg.data        + '</pre></td>'
+            + '<td width="15%">'       + decodeURI(msg.http_body)   + '</td>'
+            + '<td width="15">'        + msg.url         + '</td>'
             + '<td width="5%">'        + msg.date        + '</td>'
-            + '<td width="5%">'        + msg.url         + '</td>'
             + '<td width="5%">'        + msg.status_code + '</td>'
             + '<td width="5%">'        + msg.method      + '</td>'
             + '<td width="5%">'        + msg.user_agent  + '</td>'
+            + '<td width="5%">'        + msg.authorize   + '</td>'
             );
         } else {
           $('#table > tbody:last-child').append(
             '<tr data-id="'+ msg.id +'" class="'+ msg.id +'" >'
-            + '<td width="35%"><pre>'  + msg.data        + '</pre></td>'
-            + '<td width="20%">'       + msg.http_body   + '</td>'
-            + '<td width="20%">'       + msg.authorize   + '</td>'
+            + '<td width="45%"><pre>'  + msg.data        + '</pre></td>'
+            + '<td width="15%">'       + decodeURI(msg.http_body)   + '</td>'
+            + '<td width="15%">'       + msg.url         + '</td>'
             + '<td width="5%">'        + msg.date        + '</td>'
-            + '<td width="5%">'        + msg.url         + '</td>'
             + '<td width="5%">'        + msg.status_code + '</td>'
             + '<td width="5%">'        + msg.method      + '</td>'
             + '<td width="5%">'        + msg.user_agent  + '</td>'
+            + '<td width="5%">'        + msg.authorize   + '</td>'
             +'</tr>'
             );
         }
