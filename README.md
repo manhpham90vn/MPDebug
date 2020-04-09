@@ -34,6 +34,8 @@ npm install
 ./run.sh
 ```
 
+final go to [Server](http://localhost:3000/)
+
 ## Author
 
 manhpham90vn, manhpham90vn@icloud.com
