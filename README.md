@@ -23,7 +23,7 @@ pod 'MPDebug'
 ### NodeJS
 
 ```shell
-[sudo] brew install node
+brew install node
 cd Server
 npm install
 ```
