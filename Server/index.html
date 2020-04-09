@@ -1,37 +1,75 @@
 <!doctype html>
 <html lang="en">
-  <head>
-    <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css" integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh" crossorigin="anonymous">
-    <title>Logs</title>
-  </head>
-  <body>
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+  <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css" integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh" crossorigin="anonymous">
+  <title>Logs</title>
+  <style type="text/css">
+    table {
+      table-layout:fixed;
+    }
+    table td {
+      overflow-y: visible;
+      overflow-wrap: break-word;
+    }
+  </style>
+</head>
+<body>
   <table id ="table" class="table">
-      <thead>
-    <tr>
-      <th scope="col">Date</th>
-      <th scope="col">Url</th>
-      <th scope="col">Status Code</th>
-      <th scope="col">Method</th>
-      <th scope="col">User Agent</th>
-      <th scope="col">Authorize</th>
-      <th scope="col">HTTP Body</th>
-      <th scope="col">Response</th>
-    </tr>
-  </thead>
-  <tbody>
+    <thead>
+      <tr>
+        <th scope="col" width="30%">Response</th>
+        <th scope="col" width="20%">HTTP Body</th>
+        <th scope="col" width="20%">Authorize</th>
+        <th scope="col" width="5%">Date</th>
+        <th scope="col" width="5%">Url</th>
+        <th scope="col" width="5%">Status Code</th>
+        <th scope="col" width="5%">Method</th>
+        <th scope="col" width="5%">User Agent</th>
+      </tr>
+    </thead>
+    <tbody>
     </tbody>
   </table>
-    <script src="/socket.io/socket.io.js"></script>
-    <script src="https://code.jquery.com/jquery-1.11.1.js"></script>
-    <script>
-      $(function () {
-        var socket = io('http://localhost:3000');
-        socket.on('emit', function(msg){
-          $('#table > tbody:last-child').append($('<tr><td>' + msg.date + '</td><td>' + msg.url + '</td><td>' + msg.status_code + '</td><td>' +  msg.method + '</td><td>' + msg.user_agent + '</td><td>' + msg.authorize + '</td><td><pre>' + msg.http_body + '</pre></td><td><pre>' + msg.data +'</pre></td></tr>'));
+  <script src="/socket.io/socket.io.js"></script>
+  <script src="https://code.jquery.com/jquery-1.11.1.js"></script>
+  <script>
+    $(function () {
+      var socket = io('http://localhost:3000');
+      socket.on('emit', function(msg){
+        var ids = [];
+        $('#table tr').each(function(){
+          ids.push( $(this).attr('data-id') );
         });
+        if( $.inArray(msg.id,ids) != -1 ) {
+          $('.'+ msg.id).html('');
+          $('.'+ msg.id).append(
+              '<td width="35%"><pre>'  + msg.data        + '</pre></td>'
+            + '<td width="20%">'       + msg.http_body   + '</td>'
+            + '<td width="20%">'       + msg.authorize   + '</td>'
+            + '<td width="5%">'        + msg.date        + '</td>'
+            + '<td width="5%">'        + msg.url         + '</td>'
+            + '<td width="5%">'        + msg.status_code + '</td>'
+            + '<td width="5%">'        + msg.method      + '</td>'
+            + '<td width="5%">'        + msg.user_agent  + '</td>'
+            );
+        } else {
+          $('#table > tbody:last-child').append(
+            '<tr data-id="'+ msg.id +'" class="'+ msg.id +'" >'
+            + '<td width="35%"><pre>'  + msg.data        + '</pre></td>'
+            + '<td width="20%">'       + msg.http_body   + '</td>'
+            + '<td width="20%">'       + msg.authorize   + '</td>'
+            + '<td width="5%">'        + msg.date        + '</td>'
+            + '<td width="5%">'        + msg.url         + '</td>'
+            + '<td width="5%">'        + msg.status_code + '</td>'
+            + '<td width="5%">'        + msg.method      + '</td>'
+            + '<td width="5%">'        + msg.user_agent  + '</td>'
+            +'</tr>'
+            );
+        }
       });
-    </script>
-  </body>
+    });
+  </script>
+</body>
 </html>

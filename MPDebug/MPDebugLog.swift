@@ -16,8 +16,9 @@ public final class MPDebugLog {
     var urlSessionInjector: URLSessionInjector!
     var urlConnectionInjector: URLConnectionInjector!
     var socketIOManager: SocketIOManager!
+    var datas = [MPRequestData]()
+    
     let serialQueue = DispatchQueue(label: "com.manhpham.MPDebug")
-    var datas = [DataResponse]()
     
     public func start(ip: String) {
         urlSessionInjector = URLSessionInjector(delegate: self)
@@ -38,11 +39,10 @@ public final class MPDebugLog {
             completion()
         }
     }
-    
-    func sendData(data: DataResponse) {
+        
+    func sendData(data: MPRequestData) {
         if socketIOManager.isSocketConnected() {
             socketIOManager.send(data: data.getJsonData())
-            datas.removeAll(where: { $0.taskIdentifier == data.taskIdentifier })
         }
     }
     
@@ -51,37 +51,35 @@ public final class MPDebugLog {
 extension MPDebugLog: URLSessionInjectorDelegate {
     public func urlSessionInjector(_ injector: URLSessionInjector!, didStart dataTask: URLSessionDataTask!) {
         run {
-            let dataResponse = DataResponse(taskIdentifier: dataTask.taskIdentifier)
-            dataResponse.response.url = dataTask.currentRequest?.url?.absoluteString
-            dataResponse.response.method = dataTask.currentRequest?.httpMethod
-            dataResponse.response.userAgent = dataTask.currentRequest?.allHTTPHeaderFields?["User-Agent"]
-            dataResponse.response.authorize = dataTask.currentRequest?.allHTTPHeaderFields?["Authorization"]
-            dataResponse.response.httpBody =  DataResponseParser.parse(data: dataTask.currentRequest?.httpBody)?.description
-            
+            let dataResponse = MPRequestData(urlSessionDataTask: dataTask)
             if !self.datas.contains(dataResponse) {
                 self.datas.append(dataResponse)
+            } else {
+                self.datas.filter({ $0 == dataResponse }).forEach({ $0.urlSessionDataTask = dataTask })
             }
         }
     }
     
     public func urlSessionInjector(_ injector: URLSessionInjector!, didReceiveResponse dataTask: URLSessionDataTask!, response: URLResponse!) {
         run {
-            if let response = response as? HTTPURLResponse {
-                self.datas.filter({ $0.taskIdentifier == dataTask.taskIdentifier }).forEach({ $0.response.statusCode = response.statusCode })
-            }
+            guard let dataResponse = self.datas.filter({ $0.urlSessionDataTask == dataTask }).first else { return }
+            dataResponse.response = response
+            self.sendData(data: dataResponse)
         }
     }
     
     public func urlSessionInjector(_ injector: URLSessionInjector!, didReceiveData dataTask: URLSessionDataTask!, data: Data!) {
         run {
-            self.datas.filter({ $0.taskIdentifier == dataTask.taskIdentifier }).forEach({ $0.response.data = DataResponseParser.parse(data: data)?.description })
+            guard let dataResponse = self.datas.filter({ $0.urlSessionDataTask == dataTask }).first else { return }
+            dataResponse.appendData(newData: data)
+            self.sendData(data: dataResponse)
         }
     }
     
     public func urlSessionInjector(_ injector: URLSessionInjector!, didFinishWithError dataTask: URLSessionDataTask!, error: Error!) {
         run {
-            guard let data = self.datas.filter({ $0.taskIdentifier == dataTask.taskIdentifier }).first else { return }
-            self.sendData(data: data)
+            guard let dataResponse = self.datas.filter({ $0.urlSessionDataTask == dataTask }).first else { return }
+            self.sendData(data: dataResponse)
         }
     }
 }
