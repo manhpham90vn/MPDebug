@@ -20,6 +20,20 @@ it, simply add the following line to your Podfile:
 pod 'MPDebug'
 ```
 
+### NodeJS
+
+```shell
+[sudo] brew install node
+cd Server
+npm install
+```
+
+## Run
+
+```shell
+./run.sh
+```
+
 ## Author
 
 manhpham90vn, manhpham90vn@icloud.com
