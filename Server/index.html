@@ -62,7 +62,7 @@
           $('.'+ msg.id).append(
             '<td width="45%"><pre>'     + syntaxHighlight(msg.data)  + '</pre></td>'
             + '<td width="15%">'        + decodeURI(msg.http_body)   + '</td>'
-            + '<td width="15"><a href=' + msg.url                    + ' target="_blank">' + msg.url + '</url></td>'
+            + '<td width="15"><a href=' + msg.url                    + ' target="_blank">' + decodeURIComponent(msg.url) + '</url></td>'
             + '<td width="5%">'         + msg.date                   + '</td>'
             + '<td width="5%">'         + msg.status_code            + '</td>'
             + '<td width="5%">'         + msg.method                 + '</td>'
@@ -74,7 +74,7 @@
             '<tr data-id="'             + msg.id                    + '" class="'         + msg.id +  '" >'
             + '<td width="45%"><pre>'   + syntaxHighlight(msg.data) + '</pre></td>'
             + '<td width="15%">'        + decodeURI(msg.http_body)  + '</td>'
-            + '<td width="15"><a href=' + msg.url                   + ' target="_blank">' + msg.url + '</url></td>'
+            + '<td width="15"><a href=' + msg.url                   + ' target="_blank">' + decodeURIComponent(msg.url) + '</url></td>'
             + '<td width="5%">'         + msg.date                  + '</td>'
             + '<td width="5%">'         + msg.status_code           + '</td>'
             + '<td width="5%">'         + msg.method                + '</td>'
