@@ -11,6 +11,22 @@ To run the example project, clone the repo, and run `pod install` from the Examp
 
 ## Requirements
 
+### NodeJS
+
+```shell
+brew install node
+cd Server
+npm install
+```
+
+### Run Server
+
+```shell
+./run.sh
+```
+
+final go to [Server](http://localhost:3000/)
+
 ## Installation
 
 MPDebug is available through [CocoaPods](https://cocoapods.org). To install
@@ -25,23 +41,6 @@ and your AppDelegate add
 ```Swift
 MPDebugLog.share.start()
 ```
-
-### NodeJS
-
-```shell
-brew install node
-cd Server
-npm install
-```
-
-## Run
-
-```shell
-./run.sh
-```
-
-final go to [Server](http://localhost:3000/)
-
 ## Author
 
 manhpham90vn, manhpham90vn@icloud.com
