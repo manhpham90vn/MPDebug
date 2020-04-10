@@ -25,13 +25,13 @@ extension MPDataResponseType {
         case .image(let value):
             return "Image Count = \(value.jpegData(compressionQuality: 1)?.count ?? 0) Width = \(value.size.width) Height = \(value.size.height)"
         case .html(let value):
-            return "Html Count = \(value.string.count)"
+            return value.string
         case .string(let value):
             return value
         case .unknown:
             return "Can not parser"
         case .null:
-            return ""
+            return "Null"
         }
     }
     
