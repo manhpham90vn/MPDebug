@@ -41,6 +41,12 @@ and your AppDelegate add
 ```Swift
 MPDebugLog.share.start()
 ```
+of 
+
+```Swift
+MPDebugLog.share.start(ip: "http://192.168.0.102:3000")
+```
+
 ## Author
 
 manhpham90vn, manhpham90vn@icloud.com
