@@ -71,7 +71,7 @@
             );
         } else {
           $('#table > tbody:last-child').append(
-            '<tr data-id="'             + msg.id                    + '" class="'         + msg.id +  '" >'
+            '<tr data-id="'             + msg.id                    + '" class="'         + msg.id                      +  '" >'
             + '<td width="45%"><pre>'   + syntaxHighlight(msg.data) + '</pre></td>'
             + '<td width="15%">'        + decodeURI(msg.http_body)  + '</td>'
             + '<td width="15"><a href=' + msg.url                   + ' target="_blank">' + decodeURIComponent(msg.url) + '</url></td>'
@@ -87,22 +87,36 @@
     });
 
     function syntaxHighlight(json) {
-      return json.replace(/("(\\u[a-zA-Z0-9]{4}|\\[^u]|[^\\"])*"(\s*:)?|\b(true|false|null)\b|-?\d+(?:\.\d*)?(?:[eE][+\-]?\d+)?)/g, function (match) {
-        var cls = 'number';
-        if (/^"/.test(match)) {
-          if (/:$/.test(match)) {
-            cls = 'key';
-          } else {
-            cls = 'string';
+      if (isJsonString(json)) {
+        return json.replace(/("(\\u[a-zA-Z0-9]{4}|\\[^u]|[^\\"])*"(\s*:)?|\b(true|false|null)\b|-?\d+(?:\.\d*)?(?:[eE][+\-]?\d+)?)/g, function (match) {
+          var cls = 'number';
+          if (/^"/.test(match)) {
+            if (/:$/.test(match)) {
+              cls = 'key';
+            } else {
+              cls = 'string';
+            }
+          } else if (/true|false/.test(match)) {
+            cls = 'boolean';
+          } else if (/null/.test(match)) {
+            cls = 'null';
           }
-        } else if (/true|false/.test(match)) {
-          cls = 'boolean';
-        } else if (/null/.test(match)) {
-          cls = 'null';
-        }
-        return '<span class="' + cls + '">' + match + '</span>';
-      });
+          return '<span class="' + cls + '">' + match + '</span>';
+        });
+      } else {
+        return '<xmp>' + json + '</xmp>';
+      }
     }
+
+    function isJsonString(str) {
+      try {
+        var json = JSON.parse(str);
+        return (typeof json === 'object');
+      } catch (e) {
+        return false;
+      }
+    }
+
   </script>
 </body>
 </html>
