@@ -13,10 +13,25 @@
       overflow-y: visible;
       overflow-wrap: break-word;
     }
-  </style>
+    .string { 
+      color: green; 
+    }
+    .number { 
+      color: darkorange; 
+    }
+    .boolean {
+     color: blue; 
+   }
+   .null { 
+    color: magenta; 
+  }
+  .key { 
+    color: black;
+  }
+</style>
 </head>
 <body>
-  <table id ="table" class="table">
+  <table id ="table" class="table small">
     <thead>
       <tr>
         <th scope="col" width="45%">Response</th>
@@ -45,31 +60,49 @@
         if( $.inArray(msg.id,ids) != -1 ) {
           $('.'+ msg.id).html('');
           $('.'+ msg.id).append(
-              '<td width="45%"><pre>'  + msg.data        + '</pre></td>'
-            + '<td width="15%">'       + decodeURI(msg.http_body)   + '</td>'
-            + '<td width="15">'        + msg.url         + '</td>'
-            + '<td width="5%">'        + msg.date        + '</td>'
-            + '<td width="5%">'        + msg.status_code + '</td>'
-            + '<td width="5%">'        + msg.method      + '</td>'
-            + '<td width="5%">'        + msg.user_agent  + '</td>'
-            + '<td width="5%">'        + msg.authorize   + '</td>'
+            '<td width="45%"><pre>'     + syntaxHighlight(msg.data)  + '</pre></td>'
+            + '<td width="15%">'        + decodeURI(msg.http_body)   + '</td>'
+            + '<td width="15"><a href=' + msg.url                    + ' target="_blank">' + msg.url + '</url></td>'
+            + '<td width="5%">'         + msg.date                   + '</td>'
+            + '<td width="5%">'         + msg.status_code            + '</td>'
+            + '<td width="5%">'         + msg.method                 + '</td>'
+            + '<td width="5%">'         + msg.user_agent             + '</td>'
+            + '<td width="5%">'         + msg.authorize              + '</td>'
             );
         } else {
           $('#table > tbody:last-child').append(
-            '<tr data-id="'+ msg.id +'" class="'+ msg.id +'" >'
-            + '<td width="45%"><pre>'  + msg.data        + '</pre></td>'
-            + '<td width="15%">'       + decodeURI(msg.http_body)   + '</td>'
-            + '<td width="15%">'       + msg.url         + '</td>'
-            + '<td width="5%">'        + msg.date        + '</td>'
-            + '<td width="5%">'        + msg.status_code + '</td>'
-            + '<td width="5%">'        + msg.method      + '</td>'
-            + '<td width="5%">'        + msg.user_agent  + '</td>'
-            + '<td width="5%">'        + msg.authorize   + '</td>'
-            +'</tr>'
+            '<tr data-id="'             + msg.id                    + '" class="'         + msg.id +  '" >'
+            + '<td width="45%"><pre>'   + syntaxHighlight(msg.data) + '</pre></td>'
+            + '<td width="15%">'        + decodeURI(msg.http_body)  + '</td>'
+            + '<td width="15"><a href=' + msg.url                   + ' target="_blank">' + msg.url + '</url></td>'
+            + '<td width="5%">'         + msg.date                  + '</td>'
+            + '<td width="5%">'         + msg.status_code           + '</td>'
+            + '<td width="5%">'         + msg.method                + '</td>'
+            + '<td width="5%">'         + msg.user_agent            + '</td>'
+            + '<td width="5%">'         + msg.authorize             + '</td>'
+            + '</tr>'
             );
         }
       });
     });
+
+    function syntaxHighlight(json) {
+      return json.replace(/("(\\u[a-zA-Z0-9]{4}|\\[^u]|[^\\"])*"(\s*:)?|\b(true|false|null)\b|-?\d+(?:\.\d*)?(?:[eE][+\-]?\d+)?)/g, function (match) {
+        var cls = 'number';
+        if (/^"/.test(match)) {
+          if (/:$/.test(match)) {
+            cls = 'key';
+          } else {
+            cls = 'string';
+          }
+        } else if (/true|false/.test(match)) {
+          cls = 'boolean';
+        } else if (/null/.test(match)) {
+          cls = 'null';
+        }
+        return '<span class="' + cls + '">' + match + '</span>';
+      });
+    }
   </script>
 </body>
 </html>
