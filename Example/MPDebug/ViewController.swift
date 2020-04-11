@@ -19,6 +19,16 @@ class ViewController: UIViewController {
             print("Total", data?.count ?? 0)
         }
         .resume()
+        
+        URLSession.shared.dataTask(with: URL(string: "https://github.com/manhpham90vn")!) { (data, response, error) in
+            print("Total", data?.count ?? 0)
+        }
+        .resume()
+        
+        URLSession.shared.dataTask(with: URL(string: "https://avatars0.githubusercontent.com/u/40340023?s=460&u=69c65610ce3b47ac8d4eef6be8e79ee0dbd6211b&v=4")!) { (data, response, error) in
+            print("Total", data?.count ?? 0)
+        }
+        .resume()
     }
     
     override func didReceiveMemoryWarning() {

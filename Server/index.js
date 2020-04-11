@@ -9,6 +9,7 @@ app.get('/', function(req, res){
 
 io.on('connection', function(socket){
   socket.on('on', function(msg){
+  	console.log(msg);
     io.emit('emit', msg);
   });
 });

@@ -1,122 +1,223 @@
 <!doctype html>
 <html lang="en">
+
 <head>
-  <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-  <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css" integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh" crossorigin="anonymous">
-  <title>Logs</title>
-  <style type="text/css">
-    table {
-      table-layout:fixed;
-    }
-    table td {
-      overflow-y: visible;
-      overflow-wrap: break-word;
-    }
-    .string { 
-      color: green; 
-    }
-    .number { 
-      color: darkorange; 
-    }
-    .boolean {
-     color: blue; 
-   }
-   .null { 
-    color: magenta; 
-  }
-  .key { 
-    color: black;
-  }
-</style>
-</head>
-<body>
-  <table id ="table" class="table small">
-    <thead>
-      <tr>
-        <th scope="col" width="45%">Response</th>
-        <th scope="col" width="15%">HTTP Body</th>
-        <th scope="col" width="15%">Url</th>
-        <th scope="col" width="5%">Date</th>
-        <th scope="col" width="5%">Status Code</th>
-        <th scope="col" width="5%">Method</th>
-        <th scope="col" width="5%">User Agent</th>
-        <th scope="col" width="5%">Authorize</th>
-      </tr>
-    </thead>
-    <tbody>
-    </tbody>
-  </table>
-  <script src="/socket.io/socket.io.js"></script>
-  <script src="https://code.jquery.com/jquery-1.11.1.js"></script>
-  <script>
-    $(function () {
-      var socket = io('http://localhost:3000');
-      socket.on('emit', function(msg){
-        var ids = [];
-        $('#table tr').each(function(){
-          ids.push( $(this).attr('data-id') );
-        });
-        if( $.inArray(msg.id,ids) != -1 ) {
-          $('.'+ msg.id).html('');
-          $('.'+ msg.id).append(
-            '<td width="45%"><pre>'     + syntaxHighlight(msg.data)  + '</pre></td>'
-            + '<td width="15%">'        + decodeURI(msg.http_body)   + '</td>'
-            + '<td width="15"><a href=' + msg.url                    + ' target="_blank">' + decodeURIComponent(msg.url) + '</url></td>'
-            + '<td width="5%">'         + msg.date                   + '</td>'
-            + '<td width="5%">'         + msg.status_code            + '</td>'
-            + '<td width="5%">'         + msg.method                 + '</td>'
-            + '<td width="5%">'         + msg.user_agent             + '</td>'
-            + '<td width="5%">'         + msg.authorize              + '</td>'
-            );
-        } else {
-          $('#table > tbody:last-child').append(
-            '<tr data-id="'             + msg.id                    + '" class="'         + msg.id                      +  '" >'
-            + '<td width="45%"><pre>'   + syntaxHighlight(msg.data) + '</pre></td>'
-            + '<td width="15%">'        + decodeURI(msg.http_body)  + '</td>'
-            + '<td width="15"><a href=' + msg.url                   + ' target="_blank">' + decodeURIComponent(msg.url) + '</url></td>'
-            + '<td width="5%">'         + msg.date                  + '</td>'
-            + '<td width="5%">'         + msg.status_code           + '</td>'
-            + '<td width="5%">'         + msg.method                + '</td>'
-            + '<td width="5%">'         + msg.user_agent            + '</td>'
-            + '<td width="5%">'         + msg.authorize             + '</td>'
-            + '</tr>'
-            );
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css" integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh" crossorigin="anonymous">
+    <title>Logs</title>
+    <style type="text/css">
+        table {
+            table-layout: fixed;
         }
-      });
-    });
+        
+        table td {
+            overflow-y: visible;
+            overflow-wrap: break-word;
+        }
+        
+        .string {
+            color: green;
+        }
+        
+        .number {
+            color: darkorange;
+        }
+        
+        .boolean {
+            color: blue;
+        }
+        
+        .null {
+            color: magenta;
+        }
+        
+        .key {
+            color: black;
+        }
+        
+        .modal {
+            padding: 0 !important
+        }
+        
+        .modal .modal-dialog {
+            width: 100%;
+            max-width: none;
+            height: 100%;
+            margin: 0;
+        }
+        
+        .modal .modal-content {
+            height: 100%;
+            border: 0;
+            border-radius: 0;
+        }
+        
+        .modal .modal-body {
+            overflow-y: auto;
+        }
+    </style>
+</head>
 
-    function syntaxHighlight(json) {
-      if (isJsonString(json)) {
-        return json.replace(/("(\\u[a-zA-Z0-9]{4}|\\[^u]|[^\\"])*"(\s*:)?|\b(true|false|null)\b|-?\d+(?:\.\d*)?(?:[eE][+\-]?\d+)?)/g, function (match) {
-          var cls = 'number';
-          if (/^"/.test(match)) {
-            if (/:$/.test(match)) {
-              cls = 'key';
-            } else {
-              cls = 'string';
-            }
-          } else if (/true|false/.test(match)) {
-            cls = 'boolean';
-          } else if (/null/.test(match)) {
-            cls = 'null';
-          }
-          return '<span class="' + cls + '">' + match + '</span>';
+<body>
+    <table id="table" class="table small">
+        <thead>
+            <tr>
+                <th scope="col" width="10%">Date</th>
+                <th scope="col" width="10%">Device Info</th>
+                <th scope="col" width="25%">Url</th>
+                <th scope="col" width="5%">Status Code</th>
+                <th scope="col" width="5%">Method</th>
+                <th scope="col" width="15%">User Agent</th>
+                <th scope="col" width="10%">Authorize</th>
+                <th scope="col" width="10%">HTTP Body</th>
+                <th scope="col" width="10%">Response</th>
+            </tr>
+        </thead>
+        <tbody>
+        </tbody>
+    </table>
+    <script src="/socket.io/socket.io.js"></script>
+    <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN" crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js" integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q" crossorigin="anonymous"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js" integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl" crossorigin="anonymous"></script>
+    <script>
+        $(function() {
+            var socket = io('http://localhost:3000');
+            socket.on('emit', function(msg) {
+                var ids = [];
+                $('#table tr').each(function() {
+                    ids.push($(this).attr('data-id'));
+                });
+                $('body').append(
+                    '<div class="modal fade ' + msg.id + 'authorizeModel" id="exampleModalLong" tabindex="-1" role="dialog" aria-labelledby="exampleModalLongTitle" aria-hidden="true">' +
+                        '<div class="modal-dialog" role="document">' +
+                            '<div class="modal-content">' +
+                                '<div class="modal-header">' +
+                                    '<h5 class="modal-title" id="exampleModalLongTitle">Authorize ' + msg.id + '</h5>' +
+                                    '<button type="button" class="close" data-dismiss="modal" aria-label="Close">' +
+                                        '<span aria-hidden="true">&times;</span>' +
+                                    '</button>' +
+                                '</div>' +
+                                '<div class="modal-body" id="' + msg.id + 'authorizeValue">' +
+                                '</div>' +
+                                '<div class="modal-footer">' +
+                                    '<button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>' +
+                                '</div>' +
+                            '</div>' +
+                        '</div>' +
+                    '</div>' +
+                    '<div class="modal fade ' + msg.id + 'bodyModel" id="exampleModalLong" tabindex="-1" role="dialog" aria-labelledby="exampleModalLongTitle" aria-hidden="true">' +
+                        '<div class="modal-dialog" role="document">' +
+                            '<div class="modal-content">' +
+                                '<div class="modal-header">' +
+                                    '<h5 class="modal-title" id="exampleModalLongTitle">HTTP Body ' + msg.id + '</h5>' +
+                                    '<button type="button" class="close" data-dismiss="modal" aria-label="Close">' +
+                                        '<span aria-hidden="true">&times;</span>' +
+                                    '</button>' +
+                                '</div>' +
+                                '<div class="modal-body" id="' + msg.id + 'bodyValue">' +
+                                '</div>' +
+                                '<div class="modal-footer">' +
+                                    '<button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>' +
+                                '</div>' +
+                            '</div>' +
+                        '</div>' +
+                    '</div>' +
+                    '<div class="modal fade ' + msg.id + 'dataModel" id="exampleModalLong" tabindex="-1" role="dialog" aria-labelledby="exampleModalLongTitle" aria-hidden="true">' +
+                        '<div class="modal-dialog" role="document">' +
+                            '<div class="modal-content">' +
+                                '<div class="modal-header">' +
+                                    '<h5 class="modal-title" id="exampleModalLongTitle">Response ' + msg.id + '</h5>' +
+                                    '<button type="button" class="close" data-dismiss="modal" aria-label="Close">' +
+                                        '<span aria-hidden="true">&times;</span>' +
+                                    '</button>' +
+                                '</div>' +
+                                '<div class="modal-body" id="' + msg.id + 'dataValue">' +
+                                '</div>' +
+                                '<div class="modal-footer">' +
+                                    '<button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>' +
+                                '</div>' +
+                            '</div>' +
+                        '</div>' +
+                    '</div>'
+                );
+                if ($.inArray(msg.id, ids) != -1) {
+                    $('.' + msg.id).html('');
+                    $('.' + msg.id).append(
+                          '<td width="10%">' + msg.date + '</td>' 
+                        + '<td width="10%">' + msg.device_info + '</td>' 
+                        + '<td width="25%"><a href=' + msg.url + ' target="_blank">' + decodeURIComponent(msg.url) + '</url></td>' 
+                        + '<td width="5%">' + msg.status_code + '</td>' 
+                        + '<td width="5%">' + msg.method + '</td>' 
+                        + '<td width="15%">' + msg.user_agent + '</td>' 
+                        + (msg.authorize.length == 0 ? ('<td></td>') : ('<td width="10%"><button type="button" class="btn btn-primary authorize" data-toggle="modal" data-target=".' + msg.id + 'authorizeModel">View</button></td>'))
+                        + (msg.http_body.length == 0 ? ('<td></td>') : ('<td width="10%"><button type="button" class="btn btn-primary body" data-toggle="modal" data-target=".' + msg.id + 'bodyModel">View</button></td>'))
+                        + (msg.data.length == 0 ? ('<td></td>') : ('<td width="10%"><button type="button" class="btn btn-primary data" data-toggle="modal" data-target=".' + msg.id + 'dataModel">View</button></td>'))
+                    );
+                } else {
+                    $('#table > tbody:last-child').append(
+                        '<tr data-id="' + msg.id + '" class="' + msg.id + '" >' 
+                        + '<td width="10%">' + msg.date + '</td>' 
+                        + '<td width="10%">' + msg.device_info + '</td>' 
+                        + '<td width="25%"><a href=' + msg.url + ' target="_blank">' + decodeURIComponent(msg.url) + '</url></td>' 
+                        + '<td width="5%">' + msg.status_code + '</td>' 
+                        + '<td width="5%">' + msg.method + '</td>' 
+                        + '<td width="15%">' + msg.user_agent + '</td>' 
+                        + (msg.authorize.length == 0 ? ('<td></td>') : ('<td width="10%"><button type="button" class="btn btn-primary authorize" data-toggle="modal" data-target=".' + msg.id + 'authorizeModel">View</button></td>'))
+                        + (msg.http_body.length == 0 ? ('<td></td>') : ('<td width="10%"><button type="button" class="btn btn-primary body" data-toggle="modal" data-target=".' + msg.id + 'bodyModel">View</button></td>'))
+                        + (msg.data.length == 0 ? ('<td></td>') : ('<td width="10%"><button type="button" class="btn btn-primary data" data-toggle="modal" data-target=".' + msg.id + 'dataModel">View</button></td>')) 
+                        + '</tr>'
+                    );
+                }
+                $(document).on("click", ".authorize", function() {
+                    var value = '<p><pre>' + msg.authorize + '</pre></p>';
+                    $('#' + msg.id + 'authorizeValue').html(value);
+                });
+
+                $(document).on("click", ".body", function() {
+                    var value = '<p>' + msg.http_body + '</p>';
+                    $('#' + msg.id + 'bodyValue').html(value);
+                });
+
+                $(document).on("click", ".data", function() {
+                    var value = '<p><pre>' + syntaxHighlight(msg.data) + '</pre></p>';
+                    $('#' + msg.id + 'dataValue').html(value);
+                });
+            });
         });
-      } else {
-        return '<xmp>' + json + '</xmp>';
-      }
-    }
 
-    function isJsonString(str) {
-      try {
-        var json = JSON.parse(str);
-        return (typeof json === 'object');
-      } catch (e) {
-        return false;
-      }
-    }
+        function syntaxHighlight(json) {
+            if (isJsonString(json)) {
+                return json.replace(/("(\\u[a-zA-Z0-9]{4}|\\[^u]|[^\\"])*"(\s*:)?|\b(true|false|null)\b|-?\d+(?:\.\d*)?(?:[eE][+\-]?\d+)?)/g, function(match) {
+                    var cls = 'number';
+                    if (/^"/.test(match)) {
+                        if (/:$/.test(match)) {
+                            cls = 'key';
+                        } else {
+                            cls = 'string';
+                        }
+                    } else if (/true|false/.test(match)) {
+                        cls = 'boolean';
+                    } else if (/null/.test(match)) {
+                        cls = 'null';
+                    }
+                    return '<span class="' + cls + '">' + match + '</span>';
+                });
+            } else {
+                return '<xmp>' + json + '</xmp>';
+            }
+        }
 
-  </script>
+        function isJsonString(str) {
+            try {
+                var json = JSON.parse(str);
+                return (typeof json === 'object');
+            } catch (e) {
+                return false;
+            }
+        }
+    </script>
 </body>
+
 </html>
