@@ -10,7 +10,7 @@ import UIKit
 enum MPDataResponseParser {
     
     static func parse(data: Data?) -> MPDataResponseType {
-        guard let data = data else { return .null }
+        guard let data = data else { return .unknown }
         if let jsonObject = try? JSONSerialization.jsonObject(with: data, options: .allowFragments) {
             if let jsonData = try? JSONSerialization.data(withJSONObject: jsonObject, options: .prettyPrinted) {
                 if let jsonString = String(data: jsonData, encoding: .utf8) {

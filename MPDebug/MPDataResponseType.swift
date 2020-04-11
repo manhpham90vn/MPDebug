@@ -13,7 +13,6 @@ enum MPDataResponseType {
     case html(value: NSMutableAttributedString)
     case string(value: String)
     case unknown
-    case null
 }
 
 extension MPDataResponseType {
@@ -29,9 +28,7 @@ extension MPDataResponseType {
         case .string(let value):
             return value
         case .unknown:
-            return "Can not parser"
-        case .null:
-            return "Null"
+            return ""
         }
     }
     
