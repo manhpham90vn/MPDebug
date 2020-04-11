@@ -11,7 +11,9 @@ import MPDebugPrivate
 public final class MPDebugLog {
         
     public static let share = MPDebugLog()
-    init() { }
+    init() {
+        NotificationCenter.default.addObserver(self, selector: #selector(handleTimeOut(notification:)), name: .requestTimeOut, object: nil)
+    }
     
     var urlSessionInjector: URLSessionInjector!
     var urlConnectionInjector: URLConnectionInjector!
@@ -35,7 +37,7 @@ public final class MPDebugLog {
     }
     
     func run(completion: @escaping () -> Void) {
-        serialQueue.async {
+        serialQueue.sync {
             completion()
         }
     }
@@ -43,6 +45,12 @@ public final class MPDebugLog {
     func sendData(data: MPRequestData) {
         if socketIOManager.isSocketConnected() {
             socketIOManager.send(data: data.getJsonData())
+        }
+    }
+    
+    @objc func handleTimeOut(notification: Notification) {
+        if let mpRequestData = notification.object as? MPRequestData {
+            datas.removeAll(where: { $0 == mpRequestData })
         }
     }
     

@@ -16,7 +16,9 @@ class MPRequestInfo: Codable {
     var authorize: String
     var httpBody: String
     var data: String
-    
+    var deviceInfo: String = "\(UIDevice.current.systemName) \(UIDevice.current.systemVersion) \(UIDevice.current.name)"
+    var deviceIdentifier: String = "\(UIDevice.current.identifierForVendor?.uuidString ?? "")"
+        
     init(id: String, date: String) {
         self.id = id
         self.date = date
@@ -39,6 +41,8 @@ class MPRequestInfo: Codable {
         case authorize = "authorize"
         case httpBody = "http_body"
         case data = "data"
+        case deviceInfo = "device_info"
+        case deviceIdentifier = "device_identifier"
     }
     
 }
