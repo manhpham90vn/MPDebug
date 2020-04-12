@@ -47,6 +47,13 @@ of
 MPDebugLog.share.start(ip: "http://192.168.0.102:3000")
 ```
 
+# Todo
+- [ ] Support multipart form data request
+- [ ] Support custom log command ex: MPDebug.Log("ViewController Deinited")
+- [ ] Support custom log level ex: debug, verbose, info, error
+- [ ] Support time of http request
+- [ ] Support search and filter for server ex: filter url, device and search keyword
+
 ## Author
 
 manhpham90vn, manhpham90vn@icloud.com
