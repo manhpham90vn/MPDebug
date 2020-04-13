@@ -19,8 +19,6 @@ enum MPDataResponseParser {
             }
         } else if let dataString = String(data: data, encoding: .utf8) {
             return .string(value: dataString)
-        } else if let image = UIImage(data: data) {
-            return .image(value: image)
         } else if let htmlString = try? NSMutableAttributedString(data: data,
                                                                   options: [:],
                                                                   documentAttributes: nil) {
