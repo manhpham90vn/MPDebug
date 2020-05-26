@@ -33,18 +33,32 @@ MPDebug is available through [CocoaPods](https://cocoapods.org). To install
 it, simply add the following line to your Podfile:
 
 ```ruby
-pod 'MPDebug'
+pod 'MPDebug', :configurations => ['Debug']
 ```
 
 and your AppDelegate add
 
 ```Swift
+
+#if DEBUG
+import MPDebug
+#endif
+
+#if DEBUG
 MPDebugLog.share.start()
+#endif
 ```
 of 
 
 ```Swift
+
+#if DEBUG
+import MPDebug
+#endif
+
+#if DEBUG
 MPDebugLog.share.start(ip: "http://192.168.0.102:3000")
+#endif
 ```
 
 # Todo
