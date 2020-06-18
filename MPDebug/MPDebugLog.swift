@@ -36,19 +36,26 @@ public final class MPDebugLog {
         socketIOManager.connect()
     }
     
-    func run(completion: @escaping () -> Void) {
+    public func log(message: String) {
+        let data = MPRequestData(message: message)
+        if socketIOManager.isSocketConnected() {
+            socketIOManager.send(data: data.getJsonMessageData())
+        }
+    }
+    
+    private func run(completion: @escaping () -> Void) {
         serialQueue.sync {
             completion()
         }
     }
         
-    func sendData(data: MPRequestData) {
+    private func sendData(data: MPRequestData) {
         if socketIOManager.isSocketConnected() {
-            socketIOManager.send(data: data.getJsonData())
+            socketIOManager.send(data: data.getJsonResponseData())
         }
     }
     
-    @objc func handleTimeOut(notification: Notification) {
+    @objc private func handleTimeOut(notification: Notification) {
         if let mpRequestData = notification.object as? MPRequestData {
             datas.removeAll(where: { $0 == mpRequestData })
         }

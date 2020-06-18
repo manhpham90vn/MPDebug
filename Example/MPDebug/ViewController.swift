@@ -7,9 +7,12 @@
 //
 
 import UIKit
+import MPDebug
 
 class ViewController: UIViewController {
 
+    @IBOutlet weak var messageTextField: UITextField!
+    
     override func viewDidLoad() {
         super.viewDidLoad()
     }
@@ -29,6 +32,11 @@ class ViewController: UIViewController {
             print("Total", data?.count ?? 0)
         }
         .resume()
+    }
+    
+    @IBAction func sendMessageButtonTapped(_ sender: Any) {
+        guard let message = messageTextField.text, !message.isEmpty else { return }
+        MPDebugLog.share.log(message: message)
     }
     
     override func didReceiveMemoryWarning() {
